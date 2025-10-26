@@ -1,5 +1,4 @@
 // ==================== index.js ====================
-import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import pino from 'pino';

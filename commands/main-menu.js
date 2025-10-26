@@ -2,6 +2,10 @@
 import os from 'os';
 import { cmd, commands } from '../command.js';
 import config from '../config.js';
+import { contextInfo } from '../system/contextInfo.js';
+
+import sessionManager from "../system/sessionManager.js";
+
 
 // Small caps function
 function toSmallCaps(str) {

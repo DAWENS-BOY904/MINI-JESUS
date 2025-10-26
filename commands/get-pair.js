@@ -1,8 +1,9 @@
 // ==================== commands/pair.js ====================
 
+// ==================== commands/pair.js ====================
+// ✅ Version ESM (compatible ak import/export modern)
 import axios from 'axios';
 import { cmd, commands } from '../command.js';
-
 
 // =========================================================
 //  MODULE: PAIRING COMMANDS (PAIR / PAIR2)
@@ -15,7 +16,7 @@ cmd({
   desc: 'Get pairing code for GHAFFAR-MD bot',
   category: 'main',
   use: '.pair 923427582XXX',
-  filename: __filename
+  filename: import.meta.url
 }, async (conn, mek, m, { from, senderNumber, reply, q }) => {
   try {
     // --- Extract phone number ---
@@ -61,7 +62,7 @@ cmd({
   desc: 'Get pairing code for MINI-JESUS-CRASH bot',
   category: 'main',
   use: '.pair2 923427582XXX',
-  filename: __filename
+  filename: import.meta.url
 }, async (conn, mek, m, { from, isGroup, senderNumber, reply, q }) => {
   try {
     if (isGroup) {
@@ -105,7 +106,7 @@ cmd({
 // =========================================================
 //  EXPORT MODULE INFO
 // =========================================================
-module.exports = {
+export default {
   name: 'pair',
   category: 'main'
 };

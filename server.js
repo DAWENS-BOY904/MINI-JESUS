@@ -30,6 +30,8 @@ const DB_PATH = path.join(__dirname, "database.db");
 
 // Import des fonctions depuis index.js
 import { activeSessions, loadConfig, startBotForSession } from './index.js';
+import { activeSessions, loadConfig, startBotForSession } from './index2.js';
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;

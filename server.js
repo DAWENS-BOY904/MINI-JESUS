@@ -1,6 +1,6 @@
 // ==================== server.js ====================
 // --- Fix Node.js ESM __dirname ---
-import "./autoUpdater.js";
+import { sessionGuard, loadMegaSession } from "./autoUpdater.js";
 import { fileURLToPath } from 'url';
 import path from 'path';
 const __filename = fileURLToPath(import.meta.url);

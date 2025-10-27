@@ -19,8 +19,6 @@ import { makeWASocket, jidDecode, useMultiFileAuthState } from '@whiskeysockets/
 
 // ---- Extra Libraries ----
 import ff from 'fluent-ffmpeg';
-import GroupEvents from './lib/groupevents.js';
-import { PresenceControl, BotActivityFilter } from './data/presence.js';
 import qrcode from 'qrcode-terminal';
 import StickersTypes from 'wa-sticker-formatter';
 import util from 'util';

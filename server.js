@@ -770,38 +770,34 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
 
 // ==================== FRONTEND AUTH ROUTES ====================
 
-// ✅ Signup page — accessible only if not logged in
+// ----------------- AUTHENTICATION PAGES -----------------
 app.get("/signup", (req, res) => {
   if (req.isAuthenticated && req.isAuthenticated()) return res.redirect("/index.html");
   res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
 });
 
-// ✅ Login page (root route)
 app.get("/", (req, res) => {
   if (req.isAuthenticated && req.isAuthenticated()) return res.redirect("/index.html");
   res.sendFile(path.join(PUBLIC_DIR, "login.html"));
 });
 
-// ✅ Login alias
 app.get("/login.html", (req, res) => {
   if (req.isAuthenticated && req.isAuthenticated()) return res.redirect("/index.html");
   res.sendFile(path.join(PUBLIC_DIR, "login.html"));
 });
 
-// ✅ Signup alias
 app.get("/signup.html", (req, res) => {
   if (req.isAuthenticated && req.isAuthenticated()) return res.redirect("/index.html");
   res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
 });
 
-// ✅ Protected dashboard
+// ----------------- PROTECTED PAGE -----------------
 app.get("/index.html", ensureAuth, (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "index.html"));
 });
-// ==================== STATIC FILES (CSS, JS, IMAGES) ====================
-// ⚠️ Pa sèvi index.html otomatikman
-app.use(express.static(PUBLIC_DIR, { index: false }));
 
+// ----------------- STATIC FILES (CSS, JS, IMAGES) -----------------
+app.use(express.static(PUBLIC_DIR, { index: false }));
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);

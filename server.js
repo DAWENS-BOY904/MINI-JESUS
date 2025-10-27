@@ -37,6 +37,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
+app.use(express.static(PUBLIC_DIR));
 
 app.head('/', (req, res) => res.status(200).send());
 // ==================== KEEP ALIVE SYSTEM ====================
@@ -690,6 +691,11 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   }));
 }
 
+// helper: ensure authenticated
+function ensureAuth(req, res, next) {
+  if (req.isAuthenticated && req.isAuthenticated()) return next();
+  res.redirect("/login.html");
+}
 
 // ROUTES
 
@@ -763,15 +769,19 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   });
 }
 
-// protect index route
-app.get("/", ensureAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+app.get("/signup", (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
+});
+// Page d'accueil = login
+app.get("/", (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, "login.html"));
 });
 
 // static files (login/signup available publicly)
-app.get("/login.html", (req, res) => res.sendFile(path.join(__dirname, "public/login.html")));
+app.get("/index.html", (req, res) => res.sendFile(path.join(__dirname, "public/index.html")));
 app.get("/signup.html", (req, res) => res.sendFile(path.join(__dirname, "public/signup.html")));
-app.get("/index.html", ensureAuth, (req, res) => res.sendFile(path.join(__dirname, "index.html")));
+app.get("/login.html", ensureAuth, (req, res) => res.sendFile(path.join(__dirname, "public/login.html")));
+
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);

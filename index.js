@@ -1,4 +1,9 @@
 // ==================== index.js ====================
+// 🌐 MINI JESUS CRASH SYSTEM - Multi-session WhatsApp Bot
+// 🧠 Version: 3.0 Stable | Engine: Node.js ESM | Author: DAWENS
+// ⚙️ Compatible: Baileys, Express, Mega.nz, Render Hosting
+// ==================================================
+
 // ---- Core Imports ----
 import fs from 'fs';
 import path from 'path';
@@ -7,65 +12,69 @@ import pino from 'pino';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
-
-// ---- Local Imports ----
-import { commands } from './command.js';
-import handler from './handler.js';
-import { smsg } from './system/func.js';
-import { contextInfo } from './system/contextInfo.js';
+import os from 'os';
+import util from 'util';
 
 // ---- WhatsApp / Baileys ----
 import { makeWASocket, jidDecode, useMultiFileAuthState } from '@whiskeysockets/baileys';
 
 // ---- Extra Libraries ----
-import ff from 'fluent-ffmpeg';
 import qrcode from 'qrcode-terminal';
-import StickersTypes from 'wa-sticker-formatter';
-import util from 'util';
+import ff from 'fluent-ffmpeg';
 import { fileTypeFromBuffer } from 'file-type';
-import { File } from 'megajs';
+
+// ---- Stickers / Formatter ----
+import StickersTypes from 'wa-sticker-formatter';
+
+// ---- Express Middlewares ----
 import bodyparser from 'body-parser';
-import os from 'os';
-import config from './config.js'; 
-import { sessionGuard } from "./autoupdate.js";
 
-// Apre koneksyon
-sessionGuard(devask);
+// ---- Local Imports ----
+import config from './config.js';
+import { commands } from './command.js';
+import handler from './handler.js';
+import { smsg } from './system/func.js';
+import { contextInfo } from './system/contextInfo.js';
+import { sessionGuard } from './autoupdate.js';
 
-// ==================== ESM Setup ====================
+// ==================== ESM PATH FIX ====================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// ==================== LOG + GLOBAL VARS ====================
 const log = console.log;
 const prefix = config.PREFIX || '!';
-const ownerNumber = ['13058962443'];
-// ==================== Globals ====================
+const ownerNumber = config.OWNER || ['13058962443'];
+
+// --- Globals ---
 global.groupSettings = {};
 global.menuState = {};
 global.groupCache = {};
 if (!globalThis.crypto?.subtle) globalThis.crypto = crypto.webcrypto;
 
-// ==================== MegaJS ====================
+// ==================== MEGA.JS AUTO IMPORT ====================
 let File;
 try {
   const megajs = await import('megajs');
   File = megajs?.default?.File || megajs.File;
 } catch {
-  console.log('📦 Installation de megajs...');
+  console.log(chalk.yellow('📦 megajs manke, ap enstale li...'));
   execSync('npm install megajs', { stdio: 'inherit' });
   const megajs = await import('megajs');
   File = megajs?.default?.File || megajs.File;
 }
 
-// ==================== Sessions Directory ====================
+// ==================== STRUCTURE DIRS ====================
 const sessionsDir = path.join(__dirname, 'sessions');
 if (!fs.existsSync(sessionsDir)) fs.mkdirSync(sessionsDir, { recursive: true });
 
-// ==================== Config File Path ====================
 const configPath = path.join(__dirname, 'config.json');
 
-// ==================== Stockage des sessions actives ====================
+// ==================== ACTIVE SESSION MAP ====================
 const activeSessions = new Map();
 
+// 🔐 SECURITY GUARD
+sessionGuard('devask');
 // ==================== Charger la configuration ====================
 function loadConfig() {
   try {

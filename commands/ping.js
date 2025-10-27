@@ -1,6 +1,7 @@
 // ==================== commands/ping.js ====================
 
 import os from "os";
+import { runtime } from "../system/func.js";
 import { performance } from "perf_hooks";
 import config from "../config.js";
 

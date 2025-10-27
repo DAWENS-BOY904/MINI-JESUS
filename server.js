@@ -799,6 +799,9 @@ app.get("/signup.html", (req, res) => {
 app.get("/index.html", ensureAuth, (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "index.html"));
 });
+// ==================== STATIC FILES (CSS, JS, IMAGES) ====================
+// ⚠️ Pa sèvi index.html otomatikman
+app.use(express.static(PUBLIC_DIR, { index: false }));
 
 // ==================== START SERVER ====================
 app.listen(PORT, () => {

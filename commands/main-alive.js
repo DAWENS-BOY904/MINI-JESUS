@@ -1,7 +1,7 @@
 // ==================== commands/alive.js ====================
 
 import os from "os";
-import { runtime } from "../lib/functions.js";
+import { runtime } from "../system/func.js";
 import config from "../config.js";
 
 // =========================================================

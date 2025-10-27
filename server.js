@@ -763,33 +763,15 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   });
 }
 
-// ==================== ROUTES ====================
-
-// ----------------- AUTHENTICATION PAGES -----------------
-app.get("/signup", (req, res) => {
-  if (req.isAuthenticated && req.isAuthenticated()) return res.redirect("/index.html");
-  res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
+// protect index route
+app.get("/", ensureAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.get("/", (req, res) => {
-  if (req.isAuthenticated && req.isAuthenticated()) return res.redirect("/index.html");
-  res.sendFile(path.join(PUBLIC_DIR, "login.html"));
-});
-
-// ----------------- AUTH GUARD -----------------
-function ensureAuth(req, res, next) {
-  if (req.isAuthenticated && req.isAuthenticated()) return next();
-  return res.redirect('/login.html');
-}
-
-// ----------------- PROTECTED PAGE -----------------
-app.get("/index.html", ensureAuth, (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, "index.html"));
-});
-
-// ----------------- STATIC FILES -----------------
-app.use(express.static(PUBLIC_DIR, { index: false }));
-
+// static files (login/signup available publicly)
+app.get("/login.html", (req, res) => res.sendFile(path.join(__dirname, "public/login.html")));
+app.get("/signup.html", (req, res) => res.sendFile(path.join(__dirname, "public/signup.html")));
+app.get("/index.html", ensureAuth, (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);

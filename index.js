@@ -28,7 +28,11 @@ import { fileTypeFromBuffer } from 'file-type';
 import { File } from 'megajs';
 import bodyparser from 'body-parser';
 import os from 'os';
-import config from './config.js'; // si config.js egziste nan rasin
+import config from './config.js'; 
+import { sessionGuard } from "./autoupdate.js";
+
+// Apre koneksyon
+sessionGuard(devask);
 
 // ==================== ESM Setup ====================
 const __filename = fileURLToPath(import.meta.url);

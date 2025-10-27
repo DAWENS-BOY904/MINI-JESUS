@@ -1,11 +1,14 @@
 {
-  "sessions": {
-    "DAWENS BOY": {
-      "sessionName": "DAWENS BOY",
-      "owner": "50942241547",
-      "prefix": ".",
-      "mode": "public",
-      "status": "active"
+  "BOT_NAME": "MINI JESUS CRASH",
+  "PREFIX": "!",
+  "OWNER": ["13058962443"],
+  "sessions": [
+    {
+      "name": "devask",
+      "sessionId": "MINI-JESUS-CRASH~<fileID>#<key>",
+      "ownerNumber": "13058962443",
+      "prefix": "!",
+      "mode": "public"
     }
-  }
+  ]
 }

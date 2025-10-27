@@ -1,6 +1,6 @@
 // ==================== commands/uptime.js ====================
 
-import { cmd, commands } from '../handler.js';
+import config from "../config.js";
 
 // =========================================================
 //  MODULE: UPTIME COMMAND

@@ -1,24 +1,41 @@
 // ==================== index.js ====================
+// ---- Core Imports ----
+import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import pino from 'pino';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
-import { commands } from './command.js';
 
-// Import Handler and smsg
-import handler from "./handler.js";
+// ---- Local Imports ----
+import { commands } from './command.js';
+import handler from './handler.js';
 import { smsg } from './system/func.js';
 import { contextInfo } from './system/contextInfo.js';
 
-// <-- Whatsapp import module Baileys -->
+// ---- WhatsApp / Baileys ----
 import { makeWASocket, jidDecode, useMultiFileAuthState } from '@whiskeysockets/baileys';
 
-// ==================== ESM __dirname ====================
+// ---- Extra Libraries ----
+import ff from 'fluent-ffmpeg';
+import GroupEvents from './lib/groupevents.js';
+import { PresenceControl, BotActivityFilter } from './data/presence.js';
+import qrcode from 'qrcode-terminal';
+import StickersTypes from 'wa-sticker-formatter';
+import util from 'util';
+import { fileTypeFromBuffer } from 'file-type';
+import { File } from 'megajs';
+import bodyparser from 'body-parser';
+import os from 'os';
+import config from './config.js'; // si config.js egziste nan rasin
+
+// ==================== ESM Setup ====================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+const log = console.log;
+const prefix = config.PREFIX || '!';
+const ownerNumber = ['13058962443'];
 // ==================== Globals ====================
 global.groupSettings = {};
 global.menuState = {};

@@ -364,8 +364,17 @@ async function startBotForSession(sessionConfig) {
 
 // ==================== Lancer toutes les sessions ====================
 async function startAllSessions() {
-  const config = loadConfig();
-  const sessions = config.sessions || [];
+  const cfg = loadConfig();
+
+  // ✅ Double vérifikasyon pou eviter undefined ou format non-array
+  let sessions = [];
+  if (Array.isArray(cfg.sessions)) {
+    sessions = cfg.sessions;
+  } else if (typeof cfg.sessions === 'object' && cfg.sessions !== null) {
+    sessions = Object.values(cfg.sessions);
+  } else {
+    console.log(chalk.red("❌ sessions dans config.json n'est pas un tableau valide"));
+  }
 
   console.log(chalk.blue(`🚀 Démarrage de ${sessions.length} session(s)...`));
 
@@ -375,8 +384,14 @@ async function startAllSessions() {
   }
 
   for (const session of sessions) {
-    if (session.name && session.sessionId && session.ownerNumber) {
-      await startBotForSession(session);
+    try {
+      if (session?.name && session?.sessionId && session?.ownerNumber) {
+        await startBotForSession(session);
+      } else {
+        console.log(chalk.red(`⚠️ Session invalide ignorée:`), session);
+      }
+    } catch (err) {
+      console.error(chalk.red(`❌ Erreur lors du démarrage de ${session?.name || 'session inconnue'}:`), err);
     }
   }
 }

@@ -2,7 +2,6 @@
 
 import os from "os";
 import { performance } from "perf_hooks";
-import { runtime } from "../lib/functions.js";
 import config from "../config.js";
 
 // =========================================================

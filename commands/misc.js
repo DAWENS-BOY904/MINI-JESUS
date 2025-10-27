@@ -1,7 +1,6 @@
 // ==================== commands/misc.js ====================
 import os from "os";
 import config from "../config.js";
-import { runtime } from "../lib/functions.js";
 
 export default [
   // =========================================================

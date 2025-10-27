@@ -690,11 +690,6 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   }));
 }
 
-// helper: ensure authenticated
-function ensureAuth(req, res, next) {
-  if (req.isAuthenticated && req.isAuthenticated()) return next();
-  res.redirect("/login.html");
-}
 
 // ROUTES
 

@@ -3,7 +3,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { execSync, exec } from "child_process";
+import { execSync } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -68,7 +68,15 @@ async function checkForUpdates() {
   }
 }
 
-// ✅ Initialize & schedule updates
-ensureGitRepo();
-setInterval(checkForUpdates, checkInterval);
-checkForUpdates(); // Run once at startup
+// ✅ Fonction sessionGuard pou index.js
+export function sessionGuard(mode = "default") {
+  console.log(`🛡️ sessionGuard(${mode}) started`);
+  ensureGitRepo();
+  checkForUpdates();
+  setInterval(checkForUpdates, checkInterval);
+}
+
+// ✅ (Opsyonèl) Lanse otomatikman si dosye a kouri dirèkteman
+if (import.meta.url === `file://${process.argv[1]}`) {
+  sessionGuard("auto");
+}

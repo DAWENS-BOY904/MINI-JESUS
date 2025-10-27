@@ -768,9 +768,15 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   });
 }
 
-// ==================== FRONTEND AUTH ROUTES ====================
+// ==================== Middleware Pwoteksyon ====================
+function ensureAuth(req, res, next) {
+  if (req.isAuthenticated && req.isAuthenticated()) return next();
+  res.redirect("/login.html");
+}
 
-// ----------------- AUTHENTICATION PAGES -----------------
+// ==================== ROUTES ====================
+
+// ----------- AUTH PAGES -----------
 app.get("/signup", (req, res) => {
   if (req.isAuthenticated && req.isAuthenticated()) return res.redirect("/index.html");
   res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
@@ -791,13 +797,33 @@ app.get("/signup.html", (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
 });
 
-// ----------------- PROTECTED PAGE -----------------
+// ----------- LOGIN ACTION -----------
+app.post("/login", passport.authenticate("local", {
+  successRedirect: "/index.html",
+  failureRedirect: "/login.html",
+}));
+
+// ----------- LOGOUT -----------
+app.get("/logout", (req, res, next) => {
+  req.logout(err => {
+    if (err) return next(err);
+    res.redirect("/login.html");
+  });
+});
+
+// ----------- PROTECTED PAGE -----------
 app.get("/index.html", ensureAuth, (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "index.html"));
 });
 
-// ----------------- STATIC FILES (CSS, JS, IMAGES) -----------------
+// ----------- STATIC FILES (CSS, JS, IMG) -----------
 app.use(express.static(PUBLIC_DIR, { index: false }));
+
+// ----------- 404 FALLBACK -----------
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(PUBLIC_DIR, "login.html"));
+});
+
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);

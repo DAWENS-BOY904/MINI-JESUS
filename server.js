@@ -776,6 +776,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "login.html"));
 });
 
+// ----------------- AUTH GUARD -----------------
+function ensureAuth(req, res, next) {
+  if (req.isAuthenticated && req.isAuthenticated()) return next();
+  return res.redirect('/login.html');
+}
+
 // ----------------- PROTECTED PAGE -----------------
 app.get("/index.html", ensureAuth, (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "index.html"));
@@ -783,12 +789,6 @@ app.get("/index.html", ensureAuth, (req, res) => {
 
 // ----------------- STATIC FILES -----------------
 app.use(express.static(PUBLIC_DIR, { index: false }));
-
-// ----------------- AUTH GUARD -----------------
-function ensureAuth(req, res, next) {
-  if (req.isAuthenticated && req.isAuthenticated()) return next();
-  return res.redirect('/login.html');
-}
 
 // ==================== START SERVER ====================
 app.listen(PORT, () => {

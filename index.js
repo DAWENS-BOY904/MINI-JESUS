@@ -4,77 +4,78 @@
 // ⚙️ Compatible: Baileys, Express, Mega.nz, Render Hosting
 // ==================================================
 
-// ---- Core Imports ----
-import fs from 'fs';
-import path from 'path';
-import chalk from 'chalk';
-import pino from 'pino';
-import crypto from 'crypto';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
-import os from 'os';
-import util from 'util';
+// ==================== CORE IMPORTS ====================
+import fs from "fs";
+import path from "path";
+import chalk from "chalk";
+import pino from "pino";
+import crypto from "crypto";
+import { fileURLToPath } from "url";
+import { execSync } from "child_process";
+import os from "os";
+import util from "util";
 
-// ---- WhatsApp / Baileys ----
-import { makeWASocket, jidDecode, useMultiFileAuthState } from '@whiskeysockets/baileys';
+// ==================== WHATSAPP / BAILEYS ====================
+import { makeWASocket, jidDecode, useMultiFileAuthState } from "@whiskeysockets/baileys";
 
-// ---- Extra Libraries ----
-import qrcode from 'qrcode-terminal';
-import ff from 'fluent-ffmpeg';
-import { fileTypeFromBuffer } from 'file-type';
+// ==================== EXTRA LIBRARIES ====================
+import qrcode from "qrcode-terminal";
+import ff from "fluent-ffmpeg";
+import { fileTypeFromBuffer } from "file-type";
 
-// ---- Stickers / Formatter ----
-import StickersTypes from 'wa-sticker-formatter';
+// ==================== STICKERS / FORMATTER ====================
+import StickersTypes from "wa-sticker-formatter";
 
-// ---- Express Middlewares ----
-import bodyparser from 'body-parser';
+// ==================== EXPRESS MIDDLEWARES ====================
+import bodyparser from "body-parser";
 
-// ---- Local Imports ----
-import config from './config.js';
-import { commands } from './command.js';
-import handler from './handler.js';
-import { smsg } from './system/func.js';
-import { contextInfo } from './system/contextInfo.js';
-import { sessionGuard } from './autoupdate.js';
+// ==================== LOCAL IMPORTS ====================
+import config from "./config.js";
+import { commands } from "./command.js";
+import handler from "./handler.js";
+import { smsg } from "./system/func.js";
+import { contextInfo } from "./system/contextInfo.js";
+import { sessionGuard } from "./autoupdate.js";
 
 // ==================== ESM PATH FIX ====================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ==================== LOG + GLOBAL VARS ====================
+// ==================== GLOBALS & CONFIG ====================
 const log = console.log;
-const prefix = config.PREFIX || '!';
-const ownerNumber = config.OWNER || ['13058962443'];
+const prefix = config.PREFIX || "!";
+const ownerNumber = config.OWNER || ["13058962443"];
 
-// --- Globals ---
 global.groupSettings = {};
 global.menuState = {};
 global.groupCache = {};
+
 if (!globalThis.crypto?.subtle) globalThis.crypto = crypto.webcrypto;
 
 // ==================== MEGA.JS AUTO IMPORT ====================
-let File;
+let MegaFile; // ✅ nouvo non pou evite konfli ak 'File' global
+
 try {
-  const megajs = await import('megajs');
-  File = megajs?.default?.File || megajs.File;
-} catch {
-  console.log(chalk.yellow('📦 megajs manke, ap enstale li...'));
-  execSync('npm install megajs', { stdio: 'inherit' });
-  const megajs = await import('megajs');
-  File = megajs?.default?.File || megajs.File;
+  const megajs = await import("megajs");
+  MegaFile = megajs?.default?.File || megajs.File;
+} catch (err) {
+  console.log(chalk.yellow("📦 megajs manke, ap enstale li..."));
+  execSync("npm install megajs", { stdio: "inherit" });
+  const megajs = await import("megajs");
+  MegaFile = megajs?.default?.File || megajs.File;
 }
 
 // ==================== STRUCTURE DIRS ====================
-const sessionsDir = path.join(__dirname, 'sessions');
+const sessionsDir = path.join(__dirname, "sessions");
 if (!fs.existsSync(sessionsDir)) fs.mkdirSync(sessionsDir, { recursive: true });
 
-const configPath = path.join(__dirname, 'config.json');
+const configPath = path.join(__dirname, "config.json");
 
 // ==================== ACTIVE SESSION MAP ====================
 const activeSessions = new Map();
 
-// 🔐 SECURITY GUARD
-sessionGuard('devask');
+// 🔐 SECURITY GUARD ====================
+sessionGuard("devask");
 // ==================== Charger la configuration ====================
 function loadConfig() {
   try {

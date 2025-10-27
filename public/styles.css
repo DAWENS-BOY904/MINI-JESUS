@@ -1,0 +1,220 @@
+/* style.css — DAWENS LEARN
+   Modern, responsive, subtle neon accents
+   Save as /style.css
+*/
+
+/* ---------- Vars ---------- */
+:root{
+  --bg-1: #0f1724;
+  --bg-2: #071229;
+  --card-bg: rgba(255,255,255,0.03);
+  --glass: rgba(255,255,255,0.04);
+  --muted: #9aa9c8;
+  --accent-a: #6ee7b7; /* mint */
+  --accent-b: #7dd3fc; /* cyan */
+  --accent-c: #c084fc; /* purple */
+  --primary-gradient: linear-gradient(135deg,var(--accent-b),var(--accent-c));
+  --danger: #ff6b6b;
+  --success: #4ade80;
+  --glass-border: rgba(255,255,255,0.06);
+  --shadow: 0 8px 30px rgba(2,6,23,0.6);
+  --radius: 14px;
+  --fw-regular: 500;
+  --fw-strong: 700;
+  --transition: 180ms cubic-bezier(.2,.9,.3,1);
+  --max-width: 420px;
+}
+
+/* ---------- Base ---------- */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(120,100,255,0.06), transparent),
+              radial-gradient(900px 500px at 90% 90%, rgba(124,239,255,0.04), transparent),
+              linear-gradient(180deg,var(--bg-1),var(--bg-2));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  color: #e6eef8;
+  -webkit-user-select:none;
+}
+
+/* ---------- Card ---------- */
+.card{
+  width:100%;
+  max-width:var(--max-width);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:var(--radius);
+  padding:28px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(8px) saturate(120%);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:stretch;
+}
+
+/* Logo circle */
+.logo{
+  width:64px;
+  height:64px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  margin:0 auto;
+  font-weight:800;
+  letter-spacing:1px;
+  font-size:20px;
+  color: #071229;
+  background: linear-gradient(135deg,var(--accent-a),var(--accent-b));
+  box-shadow: 0 6px 18px rgba(99,102,241,0.14), inset 0 -6px 18px rgba(255,255,255,0.06);
+}
+
+/* Header */
+.header-title{
+  text-align:center;
+  margin:8px 0 0 0;
+  font-weight:700;
+  font-size:18px;
+  letter-spacing:0.2px;
+  color: #f8fbff;
+}
+
+/* small helper */
+.small{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.35;
+}
+
+/* Form elements */
+form{display:flex;flex-direction:column}
+label{font-size:13px;color:var(--muted);margin-bottom:6px}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"]{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: #eaf4ff;
+  outline: none;
+  transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+  font-size:15px;
+}
+input::placeholder{color: #9fb4d6}
+input:focus{
+  border-color: rgba(125,211,252,0.9);
+  box-shadow: 0 6px 20px rgba(125,211,252,0.06), 0 0 18px rgba(192,132,252,0.04);
+  transform: translateY(-1px);
+}
+
+/* Checkbox tiny */
+input[type="checkbox"]{width:auto;height:auto;transform:translateY(1px)}
+
+/* Primary button */
+button.primary{
+  margin-top:12px;
+  padding:12px 14px;
+  border-radius:12px;
+  border: none;
+  cursor:pointer;
+  font-weight:700;
+  letter-spacing:0.3px;
+  background: var(--primary-gradient);
+  color:#071229;
+  box-shadow: 0 8px 30px rgba(124,58,237,0.12);
+  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+}
+button.primary:hover{transform:translateY(-3px);box-shadow: 0 12px 40px rgba(124,58,237,0.18)}
+button.primary:active{transform:translateY(-1px);opacity:0.95}
+
+/* login message area */
+#loginMsg, #signupMsg{
+  min-height:18px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* oauth row */
+.oauth-row{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+  justify-content:center;
+}
+.oauth{
+  display:inline-block;
+  padding:10px 14px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:600;
+  font-size:14px;
+  background: rgba(255,255,255,0.02);
+  color: var(--accent-b);
+  border: 1px solid rgba(125,211,252,0.12);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.oauth:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(125,211,252,0.06)}
+.oauth[title="Sign in with Google"]{background: linear-gradient(90deg,#fff,#f2f2f2); color:#111; border-color: rgba(0,0,0,0.06)}
+
+/* footer */
+.footer{
+  margin-top:16px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+  opacity:0.9;
+}
+
+/* small helpers & responsive */
+@media (max-width:480px){
+  .card{padding:18px;border-radius:12px}
+  .logo{width:56px;height:56px;font-size:18px}
+  .header-title{font-size:16px}
+  button.primary{padding:10px}
+}
+
+/* focus states for accessibility */
+:focus{outline: 3px solid rgba(125,211,252,0.14); outline-offset: 2px}
+
+/* little decorative neon line */
+.card::after{
+  content:'';
+  display:block;
+  height:2px;
+  width:60px;
+  margin:14px auto 0 auto;
+  border-radius:4px;
+  background: linear-gradient(90deg, var(--accent-a), var(--accent-b), var(--accent-c));
+  opacity:0.9;
+}
+
+/* subtle animated gradient background (low-cost) */
+@keyframes bgShift {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background: linear-gradient(120deg, rgba(124,58,237,0.04), rgba(125,211,252,0.03), rgba(192,132,252,0.02));
+  background-size: 400% 400%;
+  animation: bgShift 18s ease infinite;
+  pointer-events:none;
+}

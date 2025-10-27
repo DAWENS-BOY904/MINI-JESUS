@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // 📦 CHEMIN REPO (ou dwe gen git initialisé)
-const repoUrl = "https://github.com/<USERNAME>/<REPO_NAME>.git"; // 🔁 Ranplase sa
+const repoUrl = "https://github.com/DAWENS-BOY904/MINI-JESUS.git"; // 🔁 Ranplase sa
 const checkInterval = 5 * 60 * 1000; // 5 minit
 const projectDir = __dirname;
 

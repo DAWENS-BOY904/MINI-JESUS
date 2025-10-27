@@ -31,7 +31,6 @@ import bodyparser from "body-parser";
 
 // ==================== LOCAL IMPORTS ====================
 import config from "./config.js";
-import { commands } from "./command.js";
 import handler from "./handler.js";
 import { smsg } from "./system/func.js";
 import { contextInfo } from "./system/contextInfo.js";

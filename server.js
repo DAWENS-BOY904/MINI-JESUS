@@ -769,18 +769,59 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   });
 }
 
+// ==================== FRONTEND AUTH ROUTES ====================
+
+// Middleware pour protéger les pages
+function ensureAuth(req, res, next) {
+  if (req.isAuthenticated && req.isAuthenticated()) return next();
+  res.redirect("/login.html");
+}
+
+// ✅ Page signup (accessible sans login)
 app.get("/signup", (req, res) => {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return res.redirect("/index.html");
+  }
   res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
 });
-// Page d'accueil = login
+
+// ✅ Page login par défaut (si déjà connecté → index)
 app.get("/", (req, res) => {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return res.redirect("/index.html");
+  }
   res.sendFile(path.join(PUBLIC_DIR, "login.html"));
 });
 
-// static files (login/signup available publicly)
-app.get("/login.html", (req, res) => res.sendFile(path.join(__dirname, "public/login.html")));
-app.get("/signup.html", (req, res) => res.sendFile(path.join(__dirname, "public/signup.html")));
-app.get("/index.html", ensureAuth, (req, res) => res.sendFile(path.join(__dirname, "public/index.html")));
+// ✅ Login HTML direct
+app.get("/login.html", (req, res) => {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return res.redirect("/index.html");
+  }
+  res.sendFile(path.join(__dirname, "public/login.html"));
+});
+
+// ✅ Signup HTML direct
+app.get("/signup.html", (req, res) => {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return res.redirect("/index.html");
+  }
+  res.sendFile(path.join(__dirname, "public/signup.html"));
+});
+
+// ✅ Page principale (protégée)
+app.get("/index.html", ensureAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, "public/index.html"));
+});
+
+// ✅ Logout (détruit la session et redirige vers login)
+app.get("/logout", (req, res) => {
+  req.logout(() => {
+    req.session.destroy(() => {
+      res.redirect("/login.html");
+    });
+  });
+});
 
 // ==================== START SERVER ====================
 app.listen(PORT, () => {

@@ -34,7 +34,7 @@ import config from "./config.js";
 import handler from "./handler.js";
 import { smsg } from "./system/func.js";
 import { contextInfo } from "./system/contextInfo.js";
-import { sessionGuard } from "./autoupdate.js";
+import { sessionGuard } from "./autoUpdater.js";
 
 // ==================== ESM PATH FIX ====================
 const __filename = fileURLToPath(import.meta.url);

@@ -1,6 +1,5 @@
 // ==================== /commands/menu.js ====================
 import os from 'os';
-import { cmd, commands } from '../command.js';
 import config from '../config.js';
 import { contextInfo } from '../system/contextInfo.js';
 

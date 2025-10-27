@@ -1,20 +1,27 @@
-// ==================== commands/block.js ====================
+// ==================== /commands/block.js ====================
 
-import { cmd } from '../command.js';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import { cmd } from '../system/commandHandler.js'; // ✅ adaptasyon ESM
 import config from '../config.js';
 import { contextInfo } from '../system/contextInfo.js';
 
 // =========================================================
+//  Fix __filename / __dirname for ESM
+// =========================================================
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// =========================================================
 //  BLOCK COMMAND
 // =========================================================
-
 cmd({
   pattern: 'block',
   alias: ['blok', 'ban'],
   desc: 'Block a user (Owner only)',
   category: 'owner',
   react: '🚫',
-  filename: __filename,
+  filename: import.meta.url, // ✅ ESM uses import.meta.url
 }, 
 async (conn, mek, m, { reply, q, react }) => {
   try {
@@ -50,14 +57,13 @@ async (conn, mek, m, { reply, q, react }) => {
 // =========================================================
 //  UNBLOCK COMMAND
 // =========================================================
-
 cmd({
   pattern: 'unblock',
   alias: ['ublock', 'unban'],
   desc: 'Unblock a user (Owner only)',
   category: 'owner',
   react: '🔓',
-  filename: __filename,
+  filename: import.meta.url,
 }, 
 async (conn, mek, m, { reply, q, react }) => {
   try {
@@ -93,7 +99,7 @@ async (conn, mek, m, { reply, q, react }) => {
 // =========================================================
 //  EXPORT MODULE
 // =========================================================
-module.exports = {
+export default {
   name: 'block-module',
   category: 'owner'
 };

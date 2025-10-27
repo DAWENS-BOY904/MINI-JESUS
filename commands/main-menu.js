@@ -1,13 +1,15 @@
 // ==================== /commands/menu.js ====================
+// ✅ Konvèti nèt pou ESM
 import os from 'os';
 import config from '../config.js';
 import { contextInfo } from '../system/contextInfo.js';
+import sessionManager from '../system/sessionManager.js';
+import { cmd, commands } from '../system/commandHandler.js'; // ✅ nouvo import pou cmd() ak commands[]
 
-import sessionManager from "../system/sessionManager.js";
-
-
-// Small caps function
-function toSmallCaps(str) {
+/* ======================================================
+   Small Caps Utility
+====================================================== */
+const toSmallCaps = (str) => {
   const smallCaps = {
     A: 'ᴀ', B: 'ʙ', C: 'ᴄ', D: 'ᴅ', E: 'ᴇ', F: 'ғ', G: 'ɢ', H: 'ʜ',
     I: 'ɪ', J: 'ᴊ', K: 'ᴋ', L: 'ʟ', M: 'ᴍ', N: 'ɴ', O: 'ᴏ', P: 'ᴘ',
@@ -15,11 +17,14 @@ function toSmallCaps(str) {
     Y: 'ʏ', Z: 'ᴢ'
   };
   return str.toUpperCase().split('').map(c => smallCaps[c] || c).join('');
-}
+};
 
-// Utility to sleep
-const wait = ms => new Promise(res => setTimeout(res, ms));
+// Utility sleep
+const wait = (ms) => new Promise((res) => setTimeout(res, ms));
 
+/* ======================================================
+   MENU COMMAND
+====================================================== */
 cmd({
   pattern: 'menu',
   alias: ['allmenu', 'jesus'],
@@ -30,10 +35,10 @@ cmd({
 }, async (conn, mek, m, { from, pushname, isOwner }) => {
 
   const reply = async (text) => {
-    try { 
-      return await conn.sendMessage(from, { text }, { quoted: mek }); 
-    } catch (e) { 
-      console.error('reply err', e); 
+    try {
+      return await conn.sendMessage(from, { text }, { quoted: mek });
+    } catch (e) {
+      console.error('reply err', e);
     }
   };
 
@@ -45,11 +50,12 @@ cmd({
     const userName = pushname || 'User';
     const mode = config.MODE || 'default';
 
-    // Prompt for reaction confirmation
+    // Ask confirmation before showing menu
     const promptMsg = await conn.sendMessage(from, {
       text: '⚠️ You ready? React (✅ / 👍) or reply "ready" within 30s to open the menu.'
     }, { quoted: mek });
 
+    // Reaction / Reply detection
     const waitForConfirmation = (timeoutMs = 30000) => new Promise((resolve) => {
       let resolved = false;
 
@@ -96,14 +102,14 @@ cmd({
             const arr = Array.isArray(msgs) ? msgs : [msgs];
             for (const msg of arr) {
               if (!msg || !msg.key || !msg.message) continue;
-              const fromInitiator = msg.key.participant 
-                ? msg.key.participant === m.sender 
+              const fromInitiator = msg.key.participant
+                ? msg.key.participant === m.sender
                 : msg.key.remoteJid === m.sender;
               if (!fromInitiator) continue;
               const ext = msg.message.extendedTextMessage;
               const isReplyToPrompt = ext?.contextInfo?.stanzaId === promptMsg.key.id;
               const textBody = (msg.message.conversation || ext?.text || '').toLowerCase();
-              const positive = ['wi','yes','ok','✅','👍','❤️'];
+              const positive = ['wi', 'yes', 'ok', '✅', '👍', '❤️'];
               const matches = positive.some(p => textBody.includes(p));
               if (isReplyToPrompt || matches) {
                 cleanup();
@@ -138,9 +144,9 @@ cmd({
       return;
     }
 
-    await conn.sendMessage(from, { react: { text: '⚡', key: promptMsg.key } }).catch(()=>{});
+    await conn.sendMessage(from, { react: { text: '⚡', key: promptMsg.key } }).catch(() => {});
 
-    // Loading animation
+    // Progress animation
     const stages = [
       '⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜  0%',
       '🟩⬜⬜⬜⬜⬜⬜⬜⬜⬜  10%',
@@ -170,7 +176,7 @@ cmd({
       console.warn('Loading animation failed', e);
     }
 
-    // Uptime & RAM usage
+    // Uptime / RAM
     const uptime = () => {
       const sec = process.uptime();
       const h = Math.floor(sec / 3600);
@@ -222,7 +228,7 @@ cmd({
       }
     }, { quoted: quotedMsg });
 
-    // Optional audio
+    // Optional random voice/audio
     const audioOptions = [
       'https://files.catbox.moe/3cj1e3.mp4',
       'https://files.catbox.moe/vq3odo.mp4',

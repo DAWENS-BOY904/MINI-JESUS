@@ -5,30 +5,16 @@
 // ==================================================
 
 // ==================== CORE IMPORTS ====================
-import fs from "fs";
-import path from "path";
-import chalk from "chalk";
-import pino from "pino";
-import crypto from "crypto";
-import { fileURLToPath } from "url";
-import { execSync } from "child_process";
-import os from "os";
-import util from "util";
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
+import pino from 'pino';
+import crypto from 'crypto';
+import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 // ==================== WHATSAPP / BAILEYS ====================
 import { makeWASocket, jidDecode, useMultiFileAuthState } from "@whiskeysockets/baileys";
-
-// ==================== EXTRA LIBRARIES ====================
-import qrcode from "qrcode-terminal";
-import ff from "fluent-ffmpeg";
-import { fileTypeFromBuffer } from "file-type";
-
-// ==================== STICKERS / FORMATTER ====================
-import StickersTypes from "wa-sticker-formatter";
-
-// ==================== EXPRESS MIDDLEWARES ====================
-import bodyparser from "body-parser";
-
 // ==================== LOCAL IMPORTS ====================
 import config from "./config.js";
 import handler from "./handler.js";

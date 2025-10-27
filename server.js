@@ -37,7 +37,6 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use(express.static(PUBLIC_DIR));
 
 app.head('/', (req, res) => res.status(200).send());
 // ==================== KEEP ALIVE SYSTEM ====================

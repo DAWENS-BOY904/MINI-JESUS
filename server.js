@@ -1,5 +1,7 @@
 // ==================== server.js ====================
 // --- Fix Node.js ESM __dirname ---
+import OpenAI from "openai";
+import dotenv from "dotenv";
 import { sessionGuard, loadMegaSession } from "./autoUpdater.js";
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -15,13 +17,16 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv";
 import flash from "connect-flash";
 import cookieParser from "cookie-parser";
 import { v4 as uuidv4 } from "uuid";
 import fetch from "node-fetch";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 // --- Config ---
 dotenv.config();
@@ -813,6 +818,7 @@ app.get("/", (req, res) => {
 app.get("/signup.html", (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
 });
+
 // api openai key
 app.post("/api/ai", async (req, res) => {
   const { prompt } = req.body;

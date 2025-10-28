@@ -813,7 +813,25 @@ app.get("/", (req, res) => {
 app.get("/signup.html", (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
 });
+// api openai key
+app.post("/api/ai", async (req, res) => {
+  const { prompt } = req.body;
+  if (!prompt) return res.json({ ok: false, error: "Prompt required" });
 
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7
+    });
+
+    const text = response.choices[0].message.content;
+    res.json({ ok: true, response: text });
+  } catch (err) {
+    console.error(err);
+    res.json({ ok: false, error: err.message });
+  }
+});
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);

@@ -5,12 +5,52 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reply — Mini System</title>
 <style>
-body{font-family:sans-serif;background:#0c0c0c;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;}
-.card{background:#1e1e1e;padding:32px;border-radius:12px;width:400px;box-shadow:0 0 20px #6c63ff;text-align:center;}
-input{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #333;background:#111;color:#fff;}
-button{padding:12px;width:100%;border:none;border-radius:8px;background:#6c63ff;color:#fff;font-weight:600;cursor:pointer;}
-button:hover{filter:brightness(1.2);}
-.info{margin-top:12px;color:#9ba0b0;}
+body {
+  font-family:sans-serif;
+  background:#0c0c0c;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+}
+.card {
+  background:#1e1e1e;
+  padding:32px;
+  border-radius:12px;
+  width:400px;
+  box-shadow:0 0 20px #6c63ff;
+  text-align:center;
+}
+input {
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #333;
+  background:#111;
+  color:#fff;
+}
+button {
+  padding:12px;
+  width:100%;
+  border:none;
+  border-radius:8px;
+  background:#6c63ff;
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:8px;
+}
+button:hover {
+  filter:brightness(1.2);
+}
+.info {
+  margin-top:12px;
+  color:#9ba0b0;
+  word-wrap:break-word;
+}
 </style>
 </head>
 <body>
@@ -21,13 +61,28 @@ button:hover{filter:brightness(1.2);}
 <div class="info" id="info"></div>
 </div>
 <script>
-document.getElementById("getBtn").addEventListener("click", async ()=>{
-  const code=document.getElementById("code").value.trim();
-  const info=document.getElementById("info");
-  if(!code){info.textContent="Enter code";return;}
-  const res=await fetch("/api/get-reply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code})});
-  const json=await res.json();
-  if(json.ok){info.textContent="💬 Reply: "+json.reply;}else info.textContent=json.error||"❌ No reply";
+document.getElementById("getBtn").addEventListener("click", async () => {
+  const code = document.getElementById("code").value.trim();
+  const info = document.getElementById("info");
+  if(!code){info.textContent="Enter code"; return;}
+
+  try {
+    const res = await fetch("/api/get-reply", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({code})
+    });
+    const json = await res.json();
+    
+    if(json.ok) {
+      info.textContent = "💬 Reply: " + json.reply;
+    } else {
+      info.textContent = json.error || "❌ No reply or expired";
+    }
+  } catch(err) {
+    console.error(err);
+    info.textContent = "❌ Server error";
+  }
 });
 </script>
 </body>

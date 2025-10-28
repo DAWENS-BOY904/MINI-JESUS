@@ -8,12 +8,11 @@ const app = express();
 const PORT = 4000;
 
 app.use(bodyParser.json());
-app.use(express.static("public")); // kote HTML yo ye
+app.use(express.static("public"));
 
-// File pou sove mesaj yo
 const DATA_FILE = path.join("./", "comments.json");
 
-// Helper pou chifre/dechifre message ak code
+// Encryption helpers
 function encryptMessage(message, code) {
   const cipher = crypto.createCipher("aes-256-cbc", code);
   let encrypted = cipher.update(message, "utf8", "hex");
@@ -28,37 +27,34 @@ function decryptMessage(encrypted, code) {
     decrypted += decipher.final("utf8");
     return decrypted;
   } catch {
-    return null; // si code pa matche
+    return null;
   }
 }
 
-// Chaje mesaj yo
+// Load/save
 function loadComments() {
   if (!fs.existsSync(DATA_FILE)) return [];
   const data = fs.readFileSync(DATA_FILE, "utf8");
   return JSON.parse(data || "[]");
 }
 
-// Sove mesaj yo
 function saveComments(comments) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(comments, null, 2));
 }
 
-// DELETE mesaj ki pi gran pase 10 jou
+// Auto delete messages older than 10 days
 function cleanOldComments() {
   const now = Date.now();
   const comments = loadComments().filter(c => now - c.timestamp < 10 * 24 * 60 * 60 * 1000);
   saveComments(comments);
 }
 
-// ===================== API =====================
+// ================= APIs =================
 
-// POST comment
+// Post comment from user
 app.post("/api/comment", (req, res) => {
   const { name, number, message, code } = req.body;
-  if (!name || !number || !message || !code) {
-    return res.json({ ok: false, error: "All fields required" });
-  }
+  if (!name || !number || !message || !code) return res.json({ ok: false, error: "All fields required" });
 
   const encryptedMessage = encryptMessage(message, code);
 
@@ -70,14 +66,14 @@ app.post("/api/comment", (req, res) => {
     message: encryptedMessage,
     code,
     timestamp: Date.now(),
-    reply: null // admin reply
+    reply: null
   });
 
   saveComments(comments);
   res.json({ ok: true, msg: "Message sent successfully!" });
 });
 
-// GET reply pou user
+// Get reply for user
 app.post("/api/reply", (req, res) => {
   const { id, code } = req.body;
   const comments = loadComments();
@@ -92,11 +88,32 @@ app.post("/api/reply", (req, res) => {
   res.json({ ok: true, message: decryptedMsg, reply: decryptedReply });
 });
 
-// POST admin reply
+// Admin login
+app.post("/api/admin/login", (req, res) => {
+  const { email, password } = req.body;
+  if (email === "admin305@gmail.com" && password === "2026") {
+    return res.json({ ok: true, msg: "Login successful!" });
+  }
+  res.json({ ok: false, error: "Invalid credentials" });
+});
+
+// Admin get all messages
+app.get("/api/admin/messages", (req, res) => {
+  const comments = loadComments();
+  const data = comments.map(c => ({
+    id: c.id,
+    name: c.name,
+    number: c.number,
+    message: c.message,
+    timestamp: c.timestamp,
+    reply: c.reply
+  }));
+  res.json(data);
+});
+
+// Admin send reply
 app.post("/api/admin/reply", (req, res) => {
   const { id, reply } = req.body;
-  if (!id || !reply) return res.json({ ok: false, error: "Missing fields" });
-
   const comments = loadComments();
   const msg = comments.find(c => c.id === id);
   if (!msg) return res.json({ ok: false, error: "Message not found" });
@@ -107,6 +124,6 @@ app.post("/api/admin/reply", (req, res) => {
 });
 
 // Clean old messages
-setInterval(cleanOldComments, 60 * 60 * 1000); // chak 1h
+setInterval(cleanOldComments, 60 * 60 * 1000);
 
-app.listen(PORT, () => console.log(`Mini comment server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Mini comment server running at http://localhost:${PORT}`));

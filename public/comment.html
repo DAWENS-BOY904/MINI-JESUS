@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comment — Mini System</title>
+<style>
+:root{
+--bg:#0c0c0c;--card:#1e1e1e;--accent:#6c63ff;--text:#fff;
+--light:#39ff14;--muted:#9ba0b0;--radius:12px;--transition:.3s;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:sans-serif;background:var(--bg);color:var(--text);display:flex;justify-content:center;align-items:center;height:100vh;}
+.card{background:var(--card);padding:32px;border-radius:var(--radius);width:400px;box-shadow:0 0 20px var(--accent);}
+h1{text-align:center;color:var(--accent);margin-bottom:16px;}
+label{display:block;margin:8px 0 4px;color:var(--muted);}
+input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;margin-bottom:8px;}
+button{width:100%;padding:12px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;cursor:pointer;transition:var(--transition);}
+button:hover{filter:brightness(1.2);}
+.info{font-size:0.85rem;color:var(--muted);text-align:center;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>Leave Comment</h1>
+<label>Name</label><input id="name" placeholder="Your name"/>
+<label>Number</label><input id="number" placeholder="Your phone"/>
+<label>Message</label><textarea id="message" placeholder="Type your message"></textarea>
+<label>Secret Code (4 digits)</label><input id="code" maxlength="4" placeholder="1234"/>
+<button id="sendBtn">Send</button>
+<div class="info" id="info"></div>
+</div>
+<script>
+document.getElementById("sendBtn").addEventListener("click", async ()=>{
+  const name=document.getElementById("name").value.trim();
+  const number=document.getElementById("number").value.trim();
+  const message=document.getElementById("message").value.trim();
+  const code=document.getElementById("code").value.trim();
+  const info=document.getElementById("info");
+  if(!name||!number||!message||!code){info.textContent="All fields required!";return;}
+  const res=await fetch("/api/comment",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,number,message,code})});
+  const json=await res.json();
+  if(json.ok){info.textContent="✅ Message sent!";document.getElementById("name").value="";document.getElementById("number").value="";document.getElementById("message").value="";document.getElementById("code").value="";}else info.textContent=json.error||"❌ Error";
+});
+</script>
+</body>
+</html>

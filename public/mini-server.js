@@ -1,128 +1,105 @@
 // mini-server.js
-import express from 'express';
-import bodyParser from 'body-parser';
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
-import session from 'express-session';
+import express from "express";
+import bodyParser from "body-parser";
+import fs from "fs";
+import path from "path";
+import session from "express-session";
 
 const app = express();
-const PORT = 3001;
+const PORT = 4000;
 
 app.use(bodyParser.json());
-app.use(express.static('public'));
-
-// --- Sessions ---
+app.use(express.static("public"));
 app.use(session({
-  secret: 'mini_secret_comment_system',
+  secret: "mini-secret-key",
   resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 86400000 } // 1 day
+  saveUninitialized: true
 }));
 
-// --- Admin Credentials ---
-const ADMIN_EMAIL = 'admin305@gmail.com';
-const ADMIN_PASS = '2026';
+// ========== STORAGE ==========
+const now = new Date();
+comments = comments.filter(c => (now - new Date(c.timestamp)) < 10*24*60*60*1000);
+const COMMENTS_FILE = path.join("./data/comments.json");
 
-// --- File paths ---
-const messagesFile = path.join('./data/messages.json');
-const repliesFile = path.join('./data/replies.json');
+// Ensure file exists
+if (!fs.existsSync(COMMENTS_FILE)) fs.writeFileSync(COMMENTS_FILE, "[]");
 
-// --- Helpers ---
-function loadJSON(filePath) {
-  if (!fs.existsSync(filePath)) fs.writeFileSync(filePath, '[]');
-  const data = fs.readFileSync(filePath);
-  return JSON.parse(data);
-}
+// Helper functions
+const loadComments = () => JSON.parse(fs.readFileSync(COMMENTS_FILE));
+const saveComments = (data) => fs.writeFileSync(COMMENTS_FILE, JSON.stringify(data, null, 2));
 
-function saveJSON(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-}
+// Herlper
+const crypto = require('crypto');
 
-function encryptMessage(message, code) {
+function encryptMessage(message, code){
   const cipher = crypto.createCipher('aes-256-cbc', code);
   let encrypted = cipher.update(message, 'utf8', 'hex');
   encrypted += cipher.final('hex');
   return encrypted;
 }
 
-function decryptMessage(encrypted, code) {
+function decryptMessage(encrypted, code){
   try {
     const decipher = crypto.createDecipher('aes-256-cbc', code);
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
-  } catch (e) {
-    return null;
+  } catch(e) {
+    return null; // si kòd pa matche
   }
 }
+// ========== USER COMMENT ==========
+app.post("/api/comment", (req, res) => {
+  const { name, number, message, code } = req.body;
+  if (!name || !number || !message || !code) return res.json({ ok: false, error: "All fields required" });
 
-// --- Admin Login ---
-app.post('/admin/login', (req, res) => {
+  const comments = loadComments();
+  comments.push({ id: Date.now(), name, number, message, code, reply: "" });
+  saveComments(comments);
+
+  res.json({ ok: true });
+});
+
+// ========== ADMIN LOGIN ==========
+const ADMIN_EMAIL = "admin305@gmail.com";
+const ADMIN_PASS = "2026";
+
+app.post("/api/admin-login", (req, res) => {
   const { email, password, remember } = req.body;
   if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
     req.session.admin = true;
-    if (remember) req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
-    res.json({ ok: true, redirect: '/admin.html' });
-  } else {
-    res.json({ ok: false, error: 'Invalid credentials' });
-  }
+    if (remember) req.session.cookie.maxAge = 7*24*60*60*1000; // 7 days
+    res.json({ ok: true });
+  } else res.json({ ok: false, error: "Invalid credentials" });
 });
 
-// --- Check Admin Session ---
-function requireAdmin(req, res, next) {
-  if (req.session.admin) return next();
-  res.status(401).json({ error: 'Unauthorized' });
-}
-
-// --- Save User Message ---
-app.post('/api/comment', (req, res) => {
-  const { name, number, message, code } = req.body;
-  if (!name || !number || !message || !code) return res.json({ ok: false, error: 'All fields required' });
-
-  const encryptedMessage = encryptMessage(message, code);
-  const messages = loadJSON(messagesFile);
-  messages.push({ id: crypto.randomUUID(), name, number, message: encryptedMessage, code, timestamp: Date.now() });
-  saveJSON(messagesFile, messages);
-
-  res.json({ ok: true, msg: 'Message sent to admin' });
+// ========== GET COMMENTS (ADMIN ONLY) ==========
+app.get("/api/comments", (req, res) => {
+  if (!req.session.admin) return res.status(401).json({ error: "Unauthorized" });
+  const comments = loadComments();
+  res.json(comments);
 });
 
-// --- Admin Get Messages ---
-app.get('/api/admin/messages', requireAdmin, (req, res) => {
-  const messages = loadJSON(messagesFile);
-  res.json({ ok: true, messages });
-});
-
-// --- Admin Reply to Message ---
-app.post('/api/admin/reply', requireAdmin, (req, res) => {
+// ========== SEND REPLY (ADMIN ONLY) ==========
+app.post("/api/reply", (req, res) => {
+  if (!req.session.admin) return res.status(401).json({ error: "Unauthorized" });
   const { id, reply } = req.body;
-  if (!id || !reply) return res.json({ ok: false, error: 'Message ID and reply required' });
-
-  const messages = loadJSON(messagesFile);
-  const msg = messages.find(m => m.id === id);
-  if (!msg) return res.json({ ok: false, error: 'Message not found' });
-
-  const replies = loadJSON(repliesFile);
-  replies.push({ id: crypto.randomUUID(), messageId: id, reply: encryptMessage(reply, msg.code), timestamp: Date.now() });
-  saveJSON(repliesFile, replies);
-
-  res.json({ ok: true, msg: 'Reply sent to user' });
+  const comments = loadComments();
+  const c = comments.find(c => c.id === id);
+  if (!c) return res.json({ ok: false, error: "Comment not found" });
+  c.reply = reply;
+  saveComments(comments);
+  res.json({ ok: true });
 });
 
-// --- User Get Reply ---
-app.post('/api/reply', (req, res) => {
-  const { code, id } = req.body;
-  if (!code || !id) return res.json({ ok: false, error: 'Code and message ID required' });
-
-  const replies = loadJSON(repliesFile);
-  const messages = loadJSON(messagesFile);
-  const message = messages.find(m => m.id === id && m.code === code);
-  if (!message) return res.json({ ok: false, error: 'Message not found or wrong code' });
-
-  const userReplies = replies.filter(r => r.messageId === id).map(r => decryptMessage(r.reply, code)).filter(r => r !== null);
-
-  res.json({ ok: true, replies: userReplies });
+// ========== GET REPLY (USER ONLY) ==========
+app.post("/api/get-reply", (req, res) => {
+  const { code } = req.body;
+  if (!code) return res.json({ ok: false, error: "Code required" });
+  const comments = loadComments();
+  const c = comments.find(c => c.code === code && c.reply !== "");
+  if (!c) return res.json({ ok: false, error: "No reply yet" });
+  res.json({ ok: true, reply: c.reply });
 });
 
-app.listen(PORT, () => console.log(`Mini comment server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Mini Comment Server running on http://localhost:${PORT}`));

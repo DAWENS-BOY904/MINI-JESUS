@@ -707,14 +707,20 @@ app.post("/api/signup", async (req, res) => {
   try {
     const { username, email, phone, password } = req.body;
     if (!email || !username) return res.status(400).json({ error: "Missing fields" });
+
     const e = email.toLowerCase();
     const existing = await db.get("SELECT * FROM users WHERE email = ?", e);
     if (existing) return res.status(400).json({ error: "Email already in use" });
+
     const id = uuidv4();
     const hash = password ? await bcrypt.hash(password, 10) : null;
-    await db.run("INSERT INTO users (id, username, email, phone, password, created_at) VALUES (?, ?, ?, ?, ?, ?)",
-      id, username, e, phone || null, hash, Date.now());
-    return res.json({ ok: true, message: "Account created" });
+    await db.run(
+      "INSERT INTO users (id, username, email, phone, password, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+      id, username, e, phone || null, hash, Date.now()
+    );
+
+    // Signup reisi, redireksyon front-end pral voye login
+    return res.json({ ok: true, message: "Account created, please login", redirect: "/login.html" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
@@ -724,16 +730,20 @@ app.post("/api/signup", async (req, res) => {
 // local login (POST)
 app.post("/api/login", (req, res, next) => {
   const remember = req.body.remember === "true" || req.body.remember === true;
+
   passport.authenticate("local", (err, user, info) => {
     if (err) return res.status(500).json({ error: "Auth error" });
     if (!user) return res.status(401).json({ error: info?.message || "Invalid credentials" });
+
     req.logIn(user, (err2) => {
       if (err2) return res.status(500).json({ error: "Login error" });
-      // set cookie maxAge based on remember flag. If remember -> 30 days. Else 10 hours
+
+      // set cookie maxAge based on remember flag
       const ms = remember ? 30 * 24 * 3600 * 1000 : 10 * 3600 * 1000;
       req.session.cookie.maxAge = ms;
-      // return success
-      res.json({ ok: true, message: "Logged in" });
+
+      // Login reyisi, redirect front-end sou index.html
+      res.json({ ok: true, message: "Logged in", redirect: "/index.html" });
     });
   })(req, res, next);
 });
@@ -750,7 +760,12 @@ app.post("/api/logout", (req, res) => {
 // current user
 app.get("/api/me", (req, res) => {
   if (!req.user) return res.json({ user: null });
-  const user = { id: req.user.id, username: req.user.username, email: req.user.email, phone: req.user.phone };
+  const user = {
+    id: req.user.id,
+    username: req.user.username,
+    email: req.user.email,
+    phone: req.user.phone
+  };
   res.json({ user });
 });
 
@@ -758,29 +773,46 @@ app.get("/api/me", (req, res) => {
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   app.get("/auth/google", passport.authenticate("google", { scope: ["email", "profile"] }));
   app.get("/auth/google/callback", passport.authenticate("google", { failureRedirect: "/login.html" }), (req, res) => {
-    // on success redirect to index
-    res.redirect("/");
+    res.redirect("/index.html");
   });
 }
 if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   app.get("/auth/github", passport.authenticate("github", { scope: ["user:email"] }));
   app.get("/auth/github/callback", passport.authenticate("github", { failureRedirect: "/login.html" }), (req, res) => {
-    res.redirect("/");
+    res.redirect("/index.html");
   });
 }
 
+// Front-end pages
+
+// Signup page
 app.get("/signup", (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
 });
-// Page d'accueil = login
-app.get("/", (req, res) => {
+
+// Login page
+app.get("/login.html", (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "login.html"));
 });
 
-// static files (login/signup available publicly)
-app.get("/index.html", (req, res) => res.sendFile(path.join(__dirname, "public/index.html")));
-app.get("/signup.html", (req, res) => res.sendFile(path.join(__dirname, "public/signup.html")));
-app.get("/login.html", ensureAuth, (req, res) => res.sendFile(path.join(__dirname, "public/login.html")));
+// Principal page (index)
+app.get("/index.html", ensureAuth, (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, "index.html"));
+});
+
+// Root: redirect based on authentication
+app.get("/", (req, res) => {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    res.redirect("/index.html");
+  } else {
+    res.redirect("/login.html");
+  }
+});
+
+// Static signup page alias
+app.get("/signup.html", (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
+});
 
 // ==================== START SERVER ====================
 app.listen(PORT, () => {

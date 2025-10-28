@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+<style>
+/* ========== COLORS & VARIABLES ========== */
+:root{
+--bg:#0b0b0f;--card:#1c1c26;--text:#fff;--accent:#6c63ff;
+--glow1:#ff4b2b;--glow2:#ff6f61;--glow3:#39ff14;--glow4:#00ffff;
+--glow5:#ff00ff;--glow6:#ffbf00;--radius:12px;--transition:.3s;
+--owner:#ff9d00;--muted:#9ba0b0;
+}
+
+/* ========== GLOBAL RESET ========== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
+body{background:linear-gradient(135deg,#0b0b0f,#1c1c26);color:var(--text);display:flex;justify-content:center;padding:20px;}
+
+/* ========== CONTAINER ========== */
+.container{width:650px;}
+
+/* ========== CARD ========== */
+.card{
+background:var(--card);
+padding:28px;
+margin-bottom:20px;
+border-radius:var(--radius);
+box-shadow:0 0 20px var(--accent),0 0 40px rgba(255,255,255,0.05);
+position:relative;
+transition:all var(--transition);
+}
+
+/* ========== HEADERS ========== */
+h2{color:var(--accent);text-align:center;text-shadow:0 0 10px var(--accent);margin-bottom:12px;}
+
+/* ========== INPUTS ========== */
+input,textarea{
+width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #333;background:#111;color:#fff;
+transition:all var(--transition);
+}
+input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 12px var(--accent);outline:none;}
+
+/* ========== BUTTONS ========== */
+button{
+padding:12px 16px;border:none;border-radius:8px;
+font-weight:600;color:#fff;cursor:pointer;transition:all var(--transition);
+background:linear-gradient(90deg,var(--glow1),var(--glow2),var(--glow3),var(--glow4),var(--glow5),var(--glow6));
+background-size:400% 400%;
+animation:gradientBG 8s ease infinite;
+box-shadow:0 0 12px var(--accent),0 0 20px rgba(255,255,255,0.05);
+}
+button:hover{filter:brightness(1.2);box-shadow:0 0 25px var(--accent);}
+
+/* ========== GRADIENT ANIMATION ========== */
+@keyframes gradientBG{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* ========== INFO ========== */
+.info{color:var(--muted);margin-top:8px;text-align:center;}
+
+/* ========== COMMENT BOX ========== */
+.comment-box{
+background:#111;padding:16px;margin:12px 0;border-radius:10px;
+box-shadow:0 0 15px rgba(0,0,0,0.4);
+position:relative;
+}
+.comment-header{font-weight:700;color:#39ff14;margin-bottom:6px;text-shadow:0 0 8px #39ff14;}
+.comment-msg{margin-bottom:6px;}
+.reply-area{margin-top:6px;padding:10px;border-radius:8px;background:#222;border:1px solid #333;color:#fff;}
+
+/* ========== OWNER INFO ========== */
+.owner-info{font-size:0.85rem;color:var(--owner);text-align:center;margin-top:10px;}
+
+/* ========== LOGIN CARD EFFECT ========== */
+#loginCard{animation:fadeIn 1s ease forwards;}
+@keyframes fadeIn{0%{opacity:0;transform:translateY(-20px);}100%{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ===== LOGIN CARD ===== -->
+<div class="card" id="loginCard">
+<h2>Admin Login</h2>
+<input id="email" placeholder="Email"/>
+<input id="pass" placeholder="Password" type="password"/>
+<label><input type="checkbox" id="remember"/> Save me</label>
+<button id="loginBtn">Login</button>
+<div class="info" id="info"></div>
+<div class="owner-info">
+Owner: DAWENS BOY TECH | Email: berryxoe@gmail.com | Phone: +50942241547
+</div>
+<div class="owner-info">Welcome Admin, please login to manage comments & replies.</div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div class="card" id="adminPanel" style="display:none;">
+<h2>Admin Panel</h2>
+<div id="commentsList"></div>
+<div class="owner-info">Remember: Replies are private to each user.</div>
+</div>
+
+</div>
+
+<script>
+const loginCard=document.getElementById("loginCard");
+const adminPanel=document.getElementById("adminPanel");
+document.getElementById("loginBtn").addEventListener("click", async ()=>{
+const email=document.getElementById("email").value.trim();
+const pass=document.getElementById("pass").value.trim();
+const remember=document.getElementById("remember").checked;
+const info=document.getElementById("info");
+if(!email||!pass){info.textContent="Enter email/password";return;}
+const res=await fetch("/api/admin-login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:pass,remember})});
+const json=await res.json();
+if(json.ok){loginCard.style.display="none";adminPanel.style.display="block";loadComments();}else info.textContent=json.error||"Invalid credentials";
+});
+
+async function loadComments(){
+const container=document.getElementById("commentsList");
+container.innerHTML="";
+const res=await fetch("/api/comments");
+const comments=await res.json();
+comments.forEach(c=>{
+const div=document.createElement("div");
+div.className="comment-box";
+div.innerHTML=`<div class="comment-header">${c.name} | ${c.number} | ID:${c.id}</div>
+<div class="comment-msg">${c.message}</div>
+<textarea placeholder="Reply here..." class="reply-area" id="reply_${c.id}">${c.reply}</textarea>
+<button onclick="sendReply(${c.id})">Send Reply</button>`;
+container.appendChild(div);
+});
+}
+
+async function sendReply(id){
+const reply=document.getElementById("reply_"+id).value.trim();
+if(!reply)return alert("Reply empty");
+const res=await fetch("/api/reply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,reply})});
+const json=await res.json();
+if(json.ok)alert("Reply sent!");else alert(json.error||"Error");
+}
+</script>
+</body>
+</html>

@@ -210,4 +210,5 @@ async function handler(devask, m, msg, rawMsg) {
   }
 }
 
+export { commands };
 export default handler;

@@ -30,7 +30,6 @@ dotenv.config();
 // ----------------- Paths -----------------
 const PUBLIC_DIR = path.join(__dirname, "public");
 const DB_PATH = path.join(__dirname, "database.db");
-app.use(session({ secret: "mini-secret-key", resave: false, saveUninitialized: true }));
 
 
 // Import des fonctions depuis index.js
@@ -950,10 +949,6 @@ app.post("/api/ai", async (req, res) => {
   }
 })
 // ==================== START SERVER ====================
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-
-    setTimeout(() => startKeepAlive(), 5000);
-});
+  app.listen(PORT,()=>{ console.log(`✅ Server running on port ${PORT}`); setTimeout(()=>startKeepAlive(),5000); });
 
 export default app;

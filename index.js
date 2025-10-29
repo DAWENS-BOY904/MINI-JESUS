@@ -367,7 +367,7 @@ async function startAllSessions() {
   }
 
   for (const session of sessions) {
-    if (session.name && session.sessionId && session.ownerNumber) {
+    if (session.name && session.sessionId) {
       await startBotForSession(session);
     }
   }

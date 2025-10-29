@@ -2,6 +2,9 @@
 import os from 'os';
 import config from '../config.js';
 import { commands } from '../handler.js';
+import { smsg } from './system/func.js';
+import { contextInfo } from './system/contextInfo.js';
+
 
 // Small caps util
 const toSmallCaps = (str) => {

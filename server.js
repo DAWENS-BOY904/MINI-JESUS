@@ -820,7 +820,12 @@ app.get("/signup.html", (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
 });
 
-// api openai key
+// Route prensipal pou ai.html
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'ai.html'));
+});
+
+// Route OpenAI API
 app.post("/api/ai", async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.json({ ok: false, error: "Prompt required" });

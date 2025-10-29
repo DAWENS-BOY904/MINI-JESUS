@@ -27,6 +27,7 @@ import OpenAI from "openai";
 // --- Config ---
 dotenv.config();
 // ----------------- Paths -----------------
+const PUBLIC_DIR = path.join(__dirname, "public");
 const DB_PATH = path.join(__dirname, "database.db");
 
 // Import des fonctions depuis index.js
@@ -47,8 +48,6 @@ app.use(express.static(PUBLIC_DIR));
 app.head('/', (req, res) => res.status(200).send());
 
 // ==================== FRONT-END PAGES ====================
-
-const PUBLIC_DIR = path.join(__dirname, "public");
 
 // 1️⃣ Signup page (tout moun ka wè)
 app.get("/signup.html", (req, res) => {

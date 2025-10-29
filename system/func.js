@@ -31,10 +31,6 @@ export const sizeFormatter = (bytes, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
-export const runtime = () => {
-  return process.uptime();
-};
-
 export const unixTimestampSeconds = (date = new Date()) =>
   Math.floor(date.getTime() / 1000);
 

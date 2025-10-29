@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Essayer Gratuitement — DAWENS LEARN</title>
+<style>
+/* =========================
+   DAWENS LEARN — PRO THEME
+   Author: Dawens Boy Tech
+   Clean, accessible & color-rich
+   ========================= */
+
+:root{
+  /* Core */
+  --bg: #071018;
+  --surface: rgba(18,22,28,0.86);
+  --muted: #98a0b3;
+  --text: #E8EEF6;
+  --radius: 14px;
+  --gap: 18px;
+  --transition: 280ms ease;
+  --glass: rgba(255,255,255,0.04);
+  --shadow-sm: 0 6px 18px rgba(2,6,23,0.5);
+  --shadow-lg: 0 20px 45px rgba(2,6,23,0.6);
+
+  /* Accent palette (20 colors — semantic + decorative) */
+  --accent-1: #6C63FF;  /* primary purple */
+  --accent-2: #00F7FF;  /* cyan */
+  --accent-3: #FF66CC;  /* pink */
+  --accent-4: #39FF14;  /* lime */
+  --accent-5: #FFBF00;  /* amber */
+  --accent-6: #FF4B2B;  /* coral */
+  --accent-7: #33CCFF;  /* sky */
+  --accent-8: #D3FF00;  /* neon yellow */
+  --accent-9: #FF0099;  /* magenta */
+  --accent-10:#00FFCC;  /* teal */
+  --accent-11:#E85D75;  /* rose */
+  --accent-12:#8AE6B8;  /* mint */
+  --accent-13:#FFD6A5;  /* soft orange */
+  --accent-14:#B3B3FF;  /* soft purple */
+  --accent-15:#7EE7FF;  /* light cyan */
+  --accent-16:#FCA3CC;  /* soft pink */
+  --accent-17:#9BD3FF;  /* baby blue */
+  --accent-18:#FFE66D;  /* warm yellow */
+  --accent-19:#C8FFDD;  /* pale mint */
+  --accent-20:#A78BFA;  /* lavender */
+
+  /* gradients */
+  --grad-primary: linear-gradient(135deg,var(--accent-1),var(--accent-3));
+  --grad-cta: linear-gradient(90deg,var(--accent-7),var(--accent-2));
+}
+
+/* ---------- Base ---------- */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: "Inter", "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(108,99,255,0.06), transparent),
+              radial-gradient(800px 400px at 90% 90%, rgba(0,247,255,0.03), transparent),
+              var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.5;
+  padding-bottom:80px;
+}
+
+/* Utility */
+.container{max-width:1200px;margin:0 auto;padding:28px;}
+.row{display:flex;gap:var(--gap);flex-wrap:wrap}
+.col{flex:1 1 0}
+
+/* Card */
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:var(--radius);
+  border:1px solid var(--glass);
+  box-shadow:var(--shadow-sm);
+  padding:18px;
+  transition:transform var(--transition), box-shadow var(--transition);
+}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+
+/* ---------- Hero ---------- */
+.hero{
+  text-align:center;
+  padding:64px 20px;
+  border-radius:18px;
+  margin:18px 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.03);
+}
+.hero h1{font-size:2.6rem;margin:0 0 10px;background:var(--grad-primary);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.6px}
+.hero p{color:var(--muted);max-width:900px;margin:0 auto 20px}
+.hero .cta{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:12px;border:none;background:var(--grad-cta);color:#032;cursor:pointer;font-weight:700;box-shadow:0 12px 30px rgba(3,36,50,0.24);transition:transform var(--transition)}
+.hero .cta:hover{transform:translateY(-4px)}
+
+/* small secondary CTA */
+.hero .cta-ghost{margin-left:12px;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted)}
+
+/* ---------- Video grid ---------- */
+.video-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+  margin-top:22px;
+}
+.video-card{
+  overflow:hidden;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.03);
+}
+.video-card iframe{width:100%;height:200px;border:0;display:block}
+.video-card h3{margin:10px;padding:8px 12px;font-size:1rem;color:var(--text);background:transparent}
+
+/* ---------- Messages / help cards ---------- */
+.message-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.message-card{display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:12px}
+.message-card .dot{
+  min-width:44px;height:44px;border-radius:10px;background:linear-gradient(180deg,var(--accent-12),var(--accent-14));display:flex;align-items:center;justify-content:center;font-weight:700;color:#012;
+  box-shadow:0 6px 18px rgba(0,0,0,0.35)
+}
+.message-card p{margin:0;color:var(--text)}
+
+/* ---------- Quiz ---------- */
+.quiz-card{padding:18px;border-radius:12px;display:block}
+.quiz-card h4{margin:0 0 12px}
+.quiz-options label{display:block;padding:8px 10px;border-radius:8px;margin-bottom:8px;background:rgba(255,255,255,0.01);cursor:pointer;border:1px solid transparent;transition:all var(--transition)}
+.quiz-options input{margin-right:10px}
+.quiz-options label:hover{border-color:rgba(108,99,255,0.12);transform:translateY(-2px)}
+.submit-quiz{display:inline-block;background:var(--accent-1);color:#fff;padding:10px 18px;border-radius:10px;border:none;cursor:pointer;font-weight:700;box-shadow:0 10px 28px rgba(108,99,255,0.16)}
+.submit-quiz:hover{filter:brightness(1.05)}
+
+/* ---------- FAQ ---------- */
+.faq-container{max-width:900px;margin:0 auto}
+.faq-item{
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:12px;
+  border:1px solid rgba(255,255,255,0.03);
+  background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+}
+.faq-question{
+  display:flex;align-items:center;justify-content:space-between;padding:18px;cursor:pointer;
+}
+.faq-question .q{font-weight:700}
+.faq-answer{padding:0 18px 18px;color:var(--muted);display:none}
+.faq-item.active .faq-answer{display:block}
+.faq-item.active .faq-question{background:linear-gradient(90deg, rgba(108,99,255,0.06), rgba(0,247,255,0.03))}
+
+/* ---------- Testimonials ---------- */
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.testimonial-card{padding:22px;border-radius:14px;min-height:180px;display:flex;flex-direction:column;justify-content:space-between}
+.author{display:flex;align-items:center;gap:12px}
+.avatar{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent-7),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#032;font-weight:800}
+
+/* ---------- Footer ---------- */
+footer{padding:28px;text-align:center;color:var(--muted);margin-top:40px;border-top:1px solid rgba(255,255,255,0.03)}
+
+/* ---------- Buttons & small UI ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700;
+}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text)}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);color:var(--muted);font-weight:700}
+
+/* ---------- Responsiveness ---------- */
+@media (max-width:900px){
+  .hero h1{font-size:2rem}
+  .video-card iframe{height:180px}
+  .container{padding:18px}
+}
+@media (max-width:520px){
+  .hero{padding:40px 14px}
+  .video-card iframe{height:160px}
+  .message-card{flex-direction:column;align-items:flex-start}
+}
+
+/* ---------- Accessibility tweaks ---------- */
+a:focus,button:focus,input:focus,textarea:focus{outline:3px solid rgba(108,99,255,0.14);outline-offset:2px}
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .testimonial-card {
+            background: var(--dark-gray);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--medium-gray);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .testimonial-rating {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .star {
+            color: #ffd700;
+            font-size: 1.25rem;
+        }
+
+        .testimonial-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .author-title {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 4rem 0 2rem;
+            background: var(--primary-black);
+            border-top: 1px solid var(--medium-gray);
+        }
+</style>
+</head>
+<body>
+<section class="hero">
+  <h1>Essayer Gratuitement — DAWENS LEARN</h1>
+  <p>Apprenez à coder rapidement avec nos vidéos, messages et quiz interactifs. Commencez votre apprentissage maintenant!</p>
+  <button onclick="document.getElementById('videos').scrollIntoView({behavior:'smooth'});">Commencer</button>
+</section>
+
+<section class="video-section" id="videos">
+  <h2>Vidéos Apprentissage</h2>
+  <div class="video-grid">
+    <div class="video-card">
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video 1" frameborder="0" allowfullscreen></iframe>
+      <h3>Introduction au Coding</h3>
+    </div>
+    <div class="video-card">
+      <iframe src="https://www.youtube.com/embed/oHg5SJYRHA0" title="Video 2" frameborder="0" allowfullscreen></iframe>
+      <h3>Variables et Types</h3>
+    </div>
+    <div class="video-card">
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video 3" frameborder="0" allowfullscreen></iframe>
+      <h3>Fonctions et Méthodes</h3>
+    </div>
+    <div class="video-card">
+      <iframe src="https://www.youtube.com/embed/oHg5SJYRHA0" title="Video 4" frameborder="0" allowfullscreen></iframe>
+      <h3>Conditions et Boucles</h3>
+    </div>
+    <div class="video-card">
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video 5" frameborder="0" allowfullscreen></iframe>
+      <h3>Projet Final</h3>
+    </div>
+  </div>
+</section>
+
+<section class="message-section">
+  <h2>Messages d'aide</h2>
+  <div class="container">
+    <div class="message-card"><p>💡 Commencez toujours par comprendre le problème avant de coder.</p></div>
+    <div class="message-card"><p>💡 Écrivez des fonctions simples et testez-les une par une.</p></div>
+    <div class="message-card"><p>💡 Utilisez des commentaires pour vous rappeler ce que chaque partie fait.</p></div>
+    <div class="message-card"><p>💡 Ne copiez pas, comprenez! La compréhension est clé.</p></div>
+    <div class="message-card"><p>💡 Prenez des pauses, cela améliore la concentration.</p></div>
+    <div class="message-card"><p>💡 Demandez de l'aide sur les forums et communautés quand vous êtes bloqué.</p></div>
+    <div class="message-card"><p>💡 Révisez vos codes anciens pour apprendre des erreurs passées.</p></div>
+    <div class="message-card"><p>💡 Organisez votre code avec des fichiers séparés et clairs.</p></div>
+    <div class="message-card"><p>💡 Expérimentez avec de petits projets pour renforcer vos compétences.</p></div>
+    <div class="message-card"><p>💡 Toujours tester vos codes avec différents cas.</p></div>
+  </div>
+</section>
+
+<section class="quiz-section">
+  <h2>Quiz Interactif</h2>
+  <div class="container">
+    <div class="quiz-card">
+      <h4>1. Quel type de variable pour du texte?</h4>
+      <label><input type="radio" name="q1" value="a"> a) string</label><br>
+      <label><input type="radio" name="q1" value="b"> b) int</label><br>
+      <label><input type="radio" name="q1" value="c"> c) bool</label><br>
+    </div>
+    <div class="quiz-card">
+      <h4>2. Comment déclarer une fonction en JavaScript?</h4>
+      <label><input type="radio" name="q2" value="a"> a) func myFunc() </label><br>
+      <label><input type="radio" name="q2" value="b"> b) function myFunc() </label><br>
+      <label><input type="radio" name="q2" value="c"> c) def myFunc() </label><br>
+    </div>
+<!-- Repeat 18 more quiz cards... -->
+  </div>
+  <button class="submit-quiz">Soumettre le Quiz</button>
+</section>
+
+ <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">❓ FAQ</span>
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-description">
+                    Get answers to the most common questions about DAWENS LEARN ALL CODE.
+                </p>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>💡 Comprendre avant de coder</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Avant de commencer à écrire du code, prenez le temps d’analyser le problème. Décomposez-le en petites étapes logiques. Une bonne compréhension réduit les erreurs et accélère l’apprentissage.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>💡 Pratique régulière</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        La régularité est clé. Même 30 minutes par jour peuvent solidifier vos connaissances. La répétition vous aide à mémoriser les syntaxes et patterns des différents langages.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is JavaScript used for?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        JavaScript is a versatile programming language mainly used to make web pages interactive. It allows you to manipulate the DOM (Document Object Model), handle events, communicate with servers using APIs, and even create server-side applications using Node.js. En français: JavaScript est utilisé pour rendre les pages web interactives, gérer les événements et communiquer avec le serveur via des APIs.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is a Python function?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        A Python function is a reusable block of code that performs a specific task. You define it using the def keyword, provide parameters if needed, and use return to output a value. En français: Une fonction Python est un bloc de code réutilisable qui effectue une tâche spécifique, défini avec le mot-clé def.
+                    </div>
+                </div>
+<div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is the DOM in web development?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                       DOM stands for Document Object Model; it represents the structure of HTML/XML documents. JS can manipulate it to change content dynamically. En français: Le DOM est la structure d’un document HTML/XML que JavaScript peut modifier dynamiquement.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How does a for loop work in C++?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                         A for loop repeats a block of code a specified number of times. It has three parts: initialization, condition, and increment. For example: for(int i=0; i<5; i++){ cout << i; }. En français: Une boucle for répète le code un nombre déterminé de fois avec initialisation, condition et incrément.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do I read a file in Python?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        You can open a file using open("file.txt", "r") and read its contents with .read() or .readlines(). Always remember to close the file or use with open(...) as f:. En français: Pour lire un fichier, utilisez open("file.txt", "r") et .read(). Fermez le fichier après lecture.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">⭐ User Reviews</span>
+                <h2 class="section-title">What Users Are Saying</h2>
+                <p class="section-description">
+                    Join thousands of satisfied users who trust THE VOID for their WhatsApp automation needs.
+                </p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="testimonial-text">
+                        "THE VOID has revolutionized my WhatsApp experience! The ViewOnce recovery 
+                        feature is incredibly useful, and the bot is super reliable. The setup 
+                        was seamless and it works flawlessly."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MS</div>
+                        <div class="author-info">
+                            <div class="author-name">INCONNU BOY</div>
+                            <div class="author-title">Digital Marketer</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="testimonial-text">
+                        "Amazing bot with so many features! I love the music download feature and 
+                        the AI assistant is incredibly smart. The multi-device support is perfect 
+                        for managing multiple business accounts."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AJ</div>
+                        <div class="author-info">
+                            <div class="author-name">DAWENS BOY</div>
+                            <div class="author-title">Business Owner</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="testimonial-text">
+                        "The best WhatsApp bot I've ever used! The interface is intuitive, 
+                        features are powerful, and the support is excellent. The automatic 
+                        session management is a game-changer."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RK</div>
+                        <div class="author-info">
+                            <div class="author-name">DAVE BOY</div>
+                            <div class="author-title">Content Creator</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<footer>
+  <p>DAWENS LEARN © 2025. Tous droits réservés.</p>
+  <p>Contact: berryxoe@gmail.com • +50942241547</p>
+</footer>
+
+<script>
+// Quiz submit simulation
+document.querySelector(".submit-quiz").addEventListener("click", ()=>{
+  alert("Merci! Vos réponses ont été enregistrées (simulation).");
+});
+// FAQ Toggle Functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                const isActive = faqItem.classList.contains('active');
+                
+                // Close all other FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Toggle current item
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                }
+            });
+        });
+</script>
+</body>
+</html>

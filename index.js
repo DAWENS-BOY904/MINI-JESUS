@@ -4,7 +4,7 @@
 // ⚙️ Compatible: Baileys, Express, Mega.nz, Render Hosting
 // ==================================================
 
-// ==================== CORE IMPORTS ====================
+// ==================== index.js ====================
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
@@ -13,67 +13,59 @@ import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 
-// ==================== WHATSAPP / BAILEYS ====================
-import { makeWASocket, jidDecode, useMultiFileAuthState } from "@whiskeysockets/baileys";
-// ==================== LOCAL IMPORTS ====================
-import config from "./config.js";
+// Import Handler and smsg
 import handler from "./handler.js";
-import { smsg } from "./system/func.js";
-import { contextInfo } from "./system/contextInfo.js";
-import { sessionGuard } from "./autoUpdater.js";
+import { smsg } from './system/func.js';
+import { contextInfo } from './system/contextInfo.js';
 
-// ==================== ESM PATH FIX ====================
+// <-- Whatsapp import module Baileys -->
+import { makeWASocket, jidDecode, useMultiFileAuthState } from '@whiskeysockets/baileys';
+
+// ==================== ESM __dirname ====================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ==================== GLOBALS & CONFIG ====================
-const log = console.log;
-const prefix = config.PREFIX || "!";
-const ownerNumber = config.OWNER || ["13058962443"];
-
+// ==================== Globals ====================
 global.groupSettings = {};
 global.menuState = {};
 global.groupCache = {};
-
 if (!globalThis.crypto?.subtle) globalThis.crypto = crypto.webcrypto;
 
-// ==================== MEGA.JS AUTO IMPORT ====================
-let MegaFile; // ✅ nouvo non pou evite konfli ak 'File' global
-
+// ==================== MegaJS ====================
+let File;
 try {
-  const megajs = await import("megajs");
-  MegaFile = megajs?.default?.File || megajs.File;
-} catch (err) {
-  console.log(chalk.yellow("📦 megajs manke, ap enstale li..."));
-  execSync("npm install megajs", { stdio: "inherit" });
-  const megajs = await import("megajs");
-  MegaFile = megajs?.default?.File || megajs.File;
+  const megajs = await import('megajs');
+  File = megajs?.default?.File || megajs.File;
+} catch {
+  console.log('📦 Installation de megajs...');
+  execSync('npm install megajs', { stdio: 'inherit' });
+  const megajs = await import('megajs');
+  File = megajs?.default?.File || megajs.File;
 }
 
-// ==================== STRUCTURE DIRS ====================
-const sessionsDir = path.join(__dirname, "sessions");
+// ==================== Sessions Directory ====================
+const sessionsDir = path.join(__dirname, 'sessions');
 if (!fs.existsSync(sessionsDir)) fs.mkdirSync(sessionsDir, { recursive: true });
 
-const configPath = path.join(__dirname, "config.json");
+// ==================== Config File Path ====================
+const configPath = path.join(__dirname, 'config.json');
 
-// ==================== ACTIVE SESSION MAP ====================
+// ==================== Stockage des sessions actives ====================
 const activeSessions = new Map();
 
-// 🔐 SECURITY GUARD ====================
-sessionGuard("devask");
 // ==================== Charger la configuration ====================
 function loadConfig() {
   try {
     if (!fs.existsSync(configPath)) {
       console.log("❌ Fichier config.json non trouvé");
-      return { BOT_NAME: 'MINI JESUS CRASH', sessions: [] };
+      return { BOT_NAME: 'ASK CRASHER', sessions: [] };
     }
 
     const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     return configData;
   } catch (error) {
     console.error('❌ Erreur lors du chargement de config.json:', error);
-    return { BOT_NAME: 'MINI JESUS CRASH', sessions: [] };
+    return { BOT_NAME: 'ASK CRASHER', sessions: [] };
   }
 }
 
@@ -89,12 +81,12 @@ async function loadSessionFromMega(sessionId, sessionName) {
       return true;
     }
 
-    if (!sessionId.startsWith('MINI-JESUS-CRASH~')) {
+    if (!sessionId.startsWith('ASK-CRASHER-V1~')) {
       console.log(chalk.yellow(`⚠️ Format Session ID non reconnu pour ${sessionName}`));
       return false;
     }
 
-    const [fileID, key] = sessionId.replace('MINI-JESUS-CRASH~', '').split('#');
+    const [fileID, key] = sessionId.replace('ASK-CRASHER-V1~', '').split('#');
     if (!fileID || !key) {
       console.log(chalk.red(`❌ SESSION_ID invalide pour ${sessionName}`));
       return false;
@@ -148,7 +140,7 @@ async function sendWelcomeMessage(devask, sessionConfig, connectionDuration) {
       return false;
     }
 
-    const message = `*MINI JESUS CRASH CONNECT ✅*\n\n` +
+    const message = `*ASK CRASHER CONNECT ✅*\n\n` +
                   `👤 *Owner:* ${ownerNumber}\n` +
                   `🫩 *Name:* ${sessionName}` +
                   `⚙️ *Prefix:* ${prefix || '.'}\n` +
@@ -157,7 +149,7 @@ async function sendWelcomeMessage(devask, sessionConfig, connectionDuration) {
                   `💡 Utilisez *${prefix || '.'}menu* pour voir les commandes disponibles.`;
 
     await devask.sendMessage(devask.user.id, {
-      image: { url: 'https://files.catbox.moe/x16nfd.png' }, 
+      image: { url: 'https://files.catbox.moe/8s81zw.jpg' }, 
       caption: message,
       contextInfo: {
         ...contextInfo
@@ -364,17 +356,8 @@ async function startBotForSession(sessionConfig) {
 
 // ==================== Lancer toutes les sessions ====================
 async function startAllSessions() {
-  const cfg = loadConfig();
-
-  // ✅ Double vérifikasyon pou eviter undefined ou format non-array
-  let sessions = [];
-  if (Array.isArray(cfg.sessions)) {
-    sessions = cfg.sessions;
-  } else if (typeof cfg.sessions === 'object' && cfg.sessions !== null) {
-    sessions = Object.values(cfg.sessions);
-  } else {
-    console.log(chalk.red("❌ sessions dans config.json n'est pas un tableau valide"));
-  }
+  const config = loadConfig();
+  const sessions = config.sessions || [];
 
   console.log(chalk.blue(`🚀 Démarrage de ${sessions.length} session(s)...`));
 
@@ -384,14 +367,8 @@ async function startAllSessions() {
   }
 
   for (const session of sessions) {
-    try {
-      if (session?.name && session?.sessionId && session?.ownerNumber) {
-        await startBotForSession(session);
-      } else {
-        console.log(chalk.red(`⚠️ Session invalide ignorée:`), session);
-      }
-    } catch (err) {
-      console.error(chalk.red(`❌ Erreur lors du démarrage de ${session?.name || 'session inconnue'}:`), err);
+    if (session.name && session.sessionId && session.ownerNumber) {
+      await startBotForSession(session);
     }
   }
 }
@@ -429,3 +406,4 @@ function watchConfigChanges() {
 // ==================== Execute ====================
 watchConfigChanges();
 startAllSessions();
+

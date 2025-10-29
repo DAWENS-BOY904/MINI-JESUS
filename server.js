@@ -27,7 +27,6 @@ import OpenAI from "openai";
 // --- Config ---
 dotenv.config();
 // ----------------- Paths -----------------
-const PUBLIC_DIR = path.join(__dirname, "public");
 const DB_PATH = path.join(__dirname, "database.db");
 
 // Import des fonctions depuis index.js
@@ -46,6 +45,45 @@ app.use(express.json());
 app.use(express.static(PUBLIC_DIR));
 
 app.head('/', (req, res) => res.status(200).send());
+
+// ==================== FRONT-END PAGES ====================
+
+const PUBLIC_DIR = path.join(__dirname, "public");
+
+// 1️⃣ Signup page (tout moun ka wè)
+app.get("/signup.html", (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
+});
+
+// 2️⃣ Login page (tout moun ka wè)
+app.get("/login.html", (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, "login.html"));
+});
+
+// 3️⃣ Index page (besoin auth)
+app.get("/index.html", ensureAuth, (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, "index.html"));
+});
+
+// 4️⃣ AI page (nou ka mete san auth oswa ak auth selon bezwen)
+// San auth:
+app.get("/ai.html", (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, "ai.html"));
+});
+
+// Si ou vle AI page sèlman pou itilizatè ki konekte:
+// app.get("/ai.html", ensureAuth, (req, res) => {
+//   res.sendFile(path.join(PUBLIC_DIR, "ai.html"));
+// });
+
+// Root: redirect selon auth
+app.get("/", (req, res) => {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    res.redirect("/index.html"); // itilizatè konekte ale nan index
+  } else {
+    res.redirect("/login.html"); // sinon ale nan login
+  }
+});
 // ==================== KEEP ALIVE SYSTEM ====================
 function startKeepAlive() {
   console.log('🫀 Initialisation du système Keep-Alive...');
@@ -788,62 +826,6 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
     res.redirect("/index.html");
   });
 }
-
-// Front-end pages
-
-// Signup page
-app.get("/signup", (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
-});
-
-// Login page
-app.get("/login.html", (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, "login.html"));
-});
-
-// Principal page (index)
-app.get("/index.html", ensureAuth, (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, "index.html"));
-});
-
-// Root: redirect based on authentication
-app.get("/", (req, res) => {
-  if (req.isAuthenticated && req.isAuthenticated()) {
-    res.redirect("/index.html");
-  } else {
-    res.redirect("/login.html");
-  }
-});
-
-// Static signup page alias
-app.get("/signup.html", (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, "signup.html"));
-});
-
-// Route prensipal pou ai.html
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'ai.html'));
-});
-
-// Route OpenAI API
-app.post("/api/ai", async (req, res) => {
-  const { prompt } = req.body;
-  if (!prompt) return res.json({ ok: false, error: "Prompt required" });
-
-  try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.7
-    });
-
-    const text = response.choices[0].message.content;
-    res.json({ ok: true, response: text });
-  } catch (err) {
-    console.error(err);
-    res.json({ ok: false, error: err.message });
-  }
-});
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);

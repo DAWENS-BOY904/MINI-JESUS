@@ -218,6 +218,12 @@ app.get('/api/health', (req, res) => {
     }
 });
 
+app.post("/api/comment", (req, res) => {
+  const { name, number, message, code } = req.body;
+  // Validate & save the comment
+  res.json({ ok: true });
+});
+
 // API pour sauvegarder la configuration ET démarrer les sessions
 app.post('/api/config', async (req, res) => {
     try {

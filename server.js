@@ -37,9 +37,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ✅ CORRECT OpenAI initialization
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 // Middleware
 app.use(express.json());

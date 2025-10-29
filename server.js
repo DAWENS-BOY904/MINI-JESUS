@@ -27,7 +27,6 @@ import OpenAI from "openai";
 // --- Config ---
 dotenv.config();
 // ----------------- Paths -----------------
-// ----------------- Paths -----------------
 const PUBLIC_DIR = path.join(__dirname, "public");
 const DB_PATH = path.join(__dirname, "database.db");
 
@@ -825,20 +824,6 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   app.get("/auth/github/callback", passport.authenticate("github", { failureRedirect: "/login.html" }), (req, res) => {
     res.redirect("/index.html");
   });
-}
-
-// Keep-alive interne
-function startKeepAlive() {
-  console.log('🫀 Keep-alive actif...');
-  setInterval(() => console.log(`🫀 Keep-alive heartbeat - ${new Date().toISOString()}`), 4*60*1000);
-  if (process.env.RENDER) {
-    setInterval(async () => {
-      try {
-        const appUrl = `https://${process.env.RENDER_SERVICE_NAME}.onrender.com`;
-        await fetch(`${appUrl}/api/health`);
-      } catch {}
-    }, 3*60*1000);
-  }
 }
 // ==================== START SERVER ====================
 app.listen(PORT, () => {

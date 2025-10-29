@@ -23,7 +23,6 @@ import fetch from "node-fetch";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 import OpenAI from "openai";
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // --- Config ---
 dotenv.config();
@@ -36,6 +35,11 @@ import { activeSessions, loadConfig, startBotForSession } from './index.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// ✅ CORRECT OpenAI initialization
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 // Middleware
 app.use(express.json());

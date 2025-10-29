@@ -831,6 +831,38 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
     res.redirect("/index.html");
   });
 }
+
+app.post("/api/ai", async (req, res) => {
+  const { prompt } = req.body;
+  if (!prompt) return res.json({ ok: false, error: "No prompt provided" });
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+        max_tokens: 500
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.choices && data.choices.length > 0) {
+      return res.json({ ok: true, response: data.choices[0].message.content });
+    } else {
+      return res.json({ ok: false, error: "No response from OpenAI" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.json({ ok: false, error: err.message });
+  }
+})
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);

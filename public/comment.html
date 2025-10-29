@@ -29,17 +29,46 @@ button:hover{filter:brightness(1.2);}
 <button id="sendBtn">Send</button>
 <div class="info" id="info"></div>
 </div>
+
 <script>
+const serverURL = "http://localhost:4000"; // Full path pou fetch
+
 document.getElementById("sendBtn").addEventListener("click", async ()=>{
-  const name=document.getElementById("name").value.trim();
-  const number=document.getElementById("number").value.trim();
-  const message=document.getElementById("message").value.trim();
-  const code=document.getElementById("code").value.trim();
-  const info=document.getElementById("info");
-  if(!name||!number||!message||!code){info.textContent="All fields required!";return;}
-  const res=await fetch("/api/comment",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,number,message,code})});
-  const json=await res.json();
-  if(json.ok){info.textContent="✅ Message sent!";document.getElementById("name").value="";document.getElementById("number").value="";document.getElementById("message").value="";document.getElementById("code").value="";}else info.textContent=json.error||"❌ Error";
+  const name = document.getElementById("name").value.trim();
+  const number = document.getElementById("number").value.trim();
+  const message = document.getElementById("message").value.trim();
+  const code = document.getElementById("code").value.trim();
+  const info = document.getElementById("info");
+
+  if(!name || !number || !message || !code){
+    info.textContent = "All fields required!";
+    return;
+  }
+
+  try {
+    const res = await fetch(`${serverURL}/api/comment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, number, message, code })
+    });
+
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+
+    if(json.ok){
+      info.textContent = "✅ Message sent!";
+      document.getElementById("name").value = "";
+      document.getElementById("number").value = "";
+      document.getElementById("message").value = "";
+      document.getElementById("code").value = "";
+    } else {
+      info.textContent = json.error || "❌ Error";
+    }
+
+  } catch(err){
+    info.textContent = "❌ Fetch failed: " + err.message;
+    console.error(err);
+  }
 });
 </script>
 </body>

@@ -16,6 +16,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import flash from "connect-flash";
 import cookieParser from "cookie-parser";
 import { v4 as uuidv4 } from "uuid";

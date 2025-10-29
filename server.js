@@ -27,6 +27,7 @@ import OpenAI from "openai";
 // --- Config ---
 dotenv.config();
 // ----------------- Paths -----------------
+// ----------------- Paths -----------------
 const PUBLIC_DIR = path.join(__dirname, "public");
 const DB_PATH = path.join(__dirname, "database.db");
 
@@ -827,7 +828,7 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
 }
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 
     setTimeout(() => startKeepAlive(), 5000);
 });

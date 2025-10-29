@@ -1,6 +1,5 @@
 // ==================== commands/gp-mute.js ====================
 
-import { delay } from "../lib/functions.js";
 import config from "../config.js";
 
 // =========================================================

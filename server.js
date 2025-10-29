@@ -1,6 +1,5 @@
 // ==================== server.js ====================
 // --- Fix Node.js ESM __dirname ---
-import OpenAI from "openai";
 import dotenv from "dotenv";
 import { sessionGuard, loadMegaSession } from "./autoUpdater.js";
 import { fileURLToPath } from 'url';
@@ -23,7 +22,7 @@ import { v4 as uuidv4 } from "uuid";
 import fetch from "node-fetch";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
-
+import OpenAI from "openai";
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // --- Config ---
